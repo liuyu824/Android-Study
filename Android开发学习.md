@@ -1,18 +1,6 @@
-# 
 
-## 
 
-#### 3.1.1 TextView 文本框
-
-设置文本的两种方式：
-
-1. xml文件 ***Android:text*** 设置
-2. Java代码中调用文本视图对象的setText方法设置
-
-```xml
-<TextView
-	//属性列表/>
-```
+#### 
 
 
 
@@ -20,15 +8,6 @@
 
 ```xml
 <EditView
-	//属性列表/>
-```
-
-
-
-#### 3.1.3 Button 按钮
-
-```xml
-<Button
 	//属性列表/>
 ```
 
@@ -203,43 +182,6 @@ imageView的属性可以在xml文件中设置，也可以在java文件中设置�
 
 
 
-## 3.2 视图基础
-
-xml文件要求在字号数字后面写明单位类型，
-
-常见的字号单位主要有px、dp、sp 3种。
-
-1. **px: ** pixel像素，px是手机屏幕的最小显示单位
-
-2. **dp: ** (device independent pixels)
-
-3. **sp: **   (Scale-independent pixel)
-
-| 名称                   | 解释                                                         |
-| :--------------------- | ------------------------------------------------------------ |
-| px（Pixel像素）        | 图像元素， 图像的基本构成单元，单个像素的大小并不固定，跟随屏幕大小和像素数量变化，一个像素点为1px。 |
-| Resolution（分辨率）   | 屏幕垂直和水平方向的像素数量，if（1920*1080），即垂直1920个像素，水平1080个像素。 |
-| Dpi（像素密度）        | 是指屏幕上每英寸距离中有多少个像素点。                       |
-| Density（密度）        | 是指屏幕上每平方英寸中含有的像素点数量。                     |
-| Dip/dp（设备独立像素） | 长度单位。                                                   |
-
-
-
-练习：在xml文件里定义好宽高，然后在java文件里给按钮绑定点击事件。
-
-1. 定义公共方法 dip2px， 将单位从dp转为pixel，代码实现：
-
-```java
-// dpValue 变量输入希望的dp值，例如
-public static int dip2px(Context context, float dpValue){
-  // 获取当前手机的像素密度
-  float scale = context.getResources().getDisplayMetrics().density;
-  return (int)(dpValue * scale + 0.5f); // 四舍五入取整
-}
-```
-
-
-
 # Context
 
 理解Context
@@ -248,54 +190,9 @@ public static int dip2px(Context context, float dpValue){
 - 也可以理解为“运行环境”：它提供了一个应用运行所需要的信息，资源，系统服务等；
 - 同样可以理解为“场景”：用户操作 和 系统交互，这一过程就是一个场景，比如Activity之前的切换，服务的启动等都少不了Context。
 
-<img src="/Users/liuyu/Desktop/Android开发/context体系结构.png" alt="context体系结构" style="zoom:70%;" align="left"/>
+<img src="/Users/liuyu/Desktop/Android-Study/Screenshots/context体系结构.png" alt="context体系结构" style="zoom: 67%;" align="left"/>
 
 
-
-## 3.3 常用布局
-
-#### LinearLayout 线性布局
-
-1. 线性布局**LinearLayout**
-
-   orientation属性值为horizontal：
-
-   内部视图在水平方向从左往右排列；
-
-2. orientation属性值为vertical：
-
-   内部试图在垂直方向从上往下排列；
-
-3. 不指定orientation属性，则LinearLayout默认水平方向排列
-
-
-
-###### 思想
-
-LinearLayout可以层层嵌套，
-
-每一层再对vertical/horizontal单独定义
-
-###### **单行等比分块**
-
-```xml
-<TextView
-	android:layout_width="0dp"
-	android:layout_height="wrap_content"
-	android:layout_weight="1"
-	android:gravity="center"
-	android:text="@string/HorizonOne" />
-<TextView
-	android:layout_width="0dp"
-	android:layout_height="wrap_content"
-	android:layout_weight="1"
-	android:gravity="center"
-	android:text="@string/HorizonTwo" />
-```
-
-代码块中的android:layout_weight，
-
-就是行中每一块的比例，1:1即相同。
 
 
 
@@ -305,7 +202,7 @@ LinearLayout可以层层嵌套，
 
 可以实现单行比例，使用GridLayout时无法实现。
 
-![tableLayout](/Users/liuyu/Desktop/Android开发/tableLayout.png)
+![tableLayout](/Users/liuyu/Desktop/Android-Study/Screenshots/tableLayout.png)
 
 
 
@@ -352,138 +249,15 @@ LinearLayout可以层层嵌套，
 
 结果：
 
-![frameLayout](/Users/liuyu/Desktop/Android开发/frameLayout.png)
-
-#### RelativeLayout 相对布局
-
-相对布局的下级视图位置由其他视图决定。
-
-用于确定下级视图位置的参照物分两种：
-
-1. 与该视图自身平级的视图
-2. 该视图的上级视图（即归属的RelativeLayout）
-
-![截屏2023-05-15 12.58.33](/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-05-15 12.58.33.png)
-
-代码：
-
-```xml
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    tools:context=".RelativeLayoutActivity">
-
-    <TextView
-        android:id="@+id/tv_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tv_relativeAsk"
-        android:textSize="30sp"/>
-
-    <Button
-        android:id="@+id/btn_true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/yes"
-        android:textSize="20sp"
-        android:layout_below="@id/tv_message"
-        android:layout_alignEnd="@id/tv_message"/>
-
-    <Button
-        android:id="@+id/btn_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/no"
-        android:textSize="20sp"
-        android:layout_below="@id/tv_message"
-        android:layout_toStartOf="@id/btn_true"/>
-
-</RelativeLayout>
-```
-
-结果：
-
-![relativeLayout](/Users/liuyu/Desktop/Android开发/relativeLayout.png)
+![frameLayout](/Users/liuyu/Desktop/Android-Study/Screenshots/frameLayout.png)
 
 
 
-#### GridLayout 网格布局
-
-网格布局支持多行多列的表格排列
-
-网格布局默认从左往右、从上往下排列，
-
-新增了两个属性：
-
-- ###### columnCount：指定网格列数
-
-- ###### rowCount：指定网格行数
 
 
 
-如何实现Grid等比平分屏幕
-
-设置android:layout_width为0
-
-设置android:layout_columnWeight为1
-
-```xml
-<TextView
-        android:gravity="center"
-        android:layout_height="60dp"
-        android:layout_width="0dp"
-        android:layout_columnWeight="1"
-        android:textColor="#000000"
-        android:background="#ffcccc"
-        android:text="@string/firstGrid"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:gravity="center"
-        android:layout_height="60dp"
-        android:layout_width="0dp"
-        android:layout_columnWeight="1"
-        android:text="@string/secondGrid"
-        android:background="#ffaa00"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:gravity="center"
-        android:layout_height="60dp"
-        android:layout_width="0dp"
-        android:layout_columnWeight="1"
-        android:text="@string/thirdGrid"
-        android:background="#00ff00"
-        android:textSize="20sp"/>
-
-    <TextView
-        android:gravity="center"
-        android:layout_height="60dp"
-        android:layout_width="0dp"
-        android:layout_columnWeight="1"
-        android:text="@string/forthGrid"
-        android:background="#660066"
-        android:textSize="20sp"
-        android:textColor="#ffffff"/>
-```
 
 
-
-#### ScrollView
-
-滚动视图有两种：
-
-**ScrollView，垂直方向**的滚动视图：
-
-- layout_width属性设置为 match_parent
-- layout_height属性设置为 wrap_content
-
-**HorizontalScrollView，水平方向**的滚动视图：
-
-- layout_width属性设置为 wrap_content
-- layout_height属性设置为 match_parent 
 
 
 
@@ -633,7 +407,7 @@ finish(); //结束当前的活动页面
 
 #### 4.1.2  activity的生命周期
 
-![Android生命周期](/Users/liuyu/Desktop/Android开发/Android生命周期.png)
+![Android生命周期](/Users/liuyu/Desktop/Android-Study/Screenshots/Android生命周期.png)
 
 OnCreate()：创建活动。页面布局加载进内存，初始状态。
 
@@ -667,7 +441,7 @@ OnRestart()：重启活动。重新加载内存中的页面数据。
 
 #### 4.1.3  activity的启动模式
 
-![Android_Activity启动模式](/Users/liuyu/Desktop/Android开发/Android_Activity启动模式.png)
+![Android_Activity启动模式](/Users/liuyu/Desktop/Android-Study/Screenshots/Android_Activity启动模式.png)
 
 可以在清单文件AndroidManifest.xml配置启动模式。
 
@@ -1131,9 +905,7 @@ outRect.down = divider;
 
   如果想要实现循环中每一个单一的item元素有特定的排列方式，需要仔细考虑宽度，如下图：
 
-![IMG_3378](/Users/liuyu/Downloads/IMG_3378.jpg)
-
-![recyclerView实现上下左右宽度相同](/Users/liuyu/Desktop/Android开发/recyclerView实现上下左右宽度相同.jpg)
+![recyclerView实现上下左右宽度相同](/Users/liuyu/Desktop/Android-Study/Screenshots/recyclerView实现上下左右宽度相同.jpg)
 
 - 在这个item里，不需要定义imageView以及TextView；
   - 可以只创建一个TextView，然后定义他的drawableTop元素
