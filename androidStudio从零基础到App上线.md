@@ -140,6 +140,8 @@ public static int dip2px(Context context, float dpValue){
 
 
 
+
+
 ### 3.3 常用布局
 
 #### 3.3.1 LinearLayout 线性布局
@@ -382,11 +384,57 @@ Button由TextView派生而来，之间的区别：
 
 - 常用的两种按钮控件的监听器
   - setOnClickListener         —— 点击监听器
-  - setLongOnClickListener —— 长按监听器
+  - setOnLongClickListener —— 长按监听器
+
+```java
+Button btn_longClk = findViewById(R.id.btn_longClk);
+	btn_longClk.setOnLongClickListener(new View.OnLongClickListener() {
+		@Override
+    public boolean onLongClick(View v) {
+			btn_longClk.setText("按钮被长按了");
+			return false;
+		}
+});
+```
 
 
 
 #### 3.4.3 禁用与恢复按钮
+
+- setEnable
+  - true：可以点
+  - false：不能点
+
+```java
+@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_button_enabled);
+
+        // 获取三个按钮的实体对象
+//        Button btn_enable = findViewById(R.id.btn_enable);
+//        Button btn_disable = findViewById(R.id.btn_disable);
+        btn_test = findViewById(R.id.btn_test);
+
+        // 设置监听器
+        findViewById(R.id.btn_enable).setOnClickListener(this);
+        findViewById(R.id.btn_disable).setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_enable){
+            // 设置 btn_enable 点击启用测试按钮事件
+            btn_test.setEnabled(true);
+            btn_test.setTextColor(Color.WHITE);
+        } else {
+            // 设置 btn_disable 点击关闭测试按钮事件
+            btn_test.setEnabled(false);
+            btn_test.setTextColor(Color.GRAY);
+        }
+    }
+```
 
 
 
@@ -727,21 +775,27 @@ public class NewsFragment extends Fragment{
 
 
 
+
+
 ## 第五章 中级控件
 
 ### 5.1 图形定制
 
 #### 5.1.1 图形Drawable
 
+Android把所有能显示的图形都抽象为Drawable类（可绘制的）。
+
+| 属性值        | 说明     | 属性值           | 说明         |
+| ------------- | -------- | ---------------- | ------------ |
+| drawable-ldpi | 低分辨率 | drawable-xhdpi   | 加高分辨率   |
+| drawable-mdpi | 中分辨率 | drawable-xxhdpi  | 超高分辨率   |
+| drawable-hdpi | 高分辨率 | drawable-xxxhdpi | 超超高分辨率 |
+
 
 
 #### 5.1.2 形状图形
 
-
-
 #### 5.1.3 九宫格图片
-
-
 
 #### 5.1.4 状态列表图形
 
@@ -775,6 +829,13 @@ cb_basketball.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListe
 
 
 #### 5.2.2 开关按钮 Switch
+
+switch是开关按钮，新添加的xml属性包含了：
+
+- textOn 设置右侧开启时的文本
+- textOff 设置左侧开启时的文本
+- track     设置开关轨道的背景
+- thumb  设置开关标识的图标
 
 
 
@@ -875,15 +936,59 @@ Button btn_sure = findViewById(R.id.sureButton);
 
 ## 第六章 数据存储
 
+6.1 键值对
 
+6.1.1 共享参数的用法
 
+6.1.2 实现记住密码功能
 
+6.1.3 更安全的数据仓库
+
+6.2 数据库
+
+6.2.1 SQL语句的基本语法
+
+6.2.2 数据库管理器 SQLiteDatabase
+
+6.2.3 数据库帮助器 SQliteOpenHelper
+
+6.2.4 优化记住密码功能
+
+6.3 存储卡
+
+6.3.1 私有存储空间与公共存储空间
+
+6.3.2 在存储卡上读写文件
+
+6.3.3 运行时动态申请权限
+
+6.4 应用组件 Application
+
+6.4.1 Application的生命周期
+
+6.4.2 利用Application操作全局变量
+
+6.4.3 避免方法数过多的问题
+
+6.4.4 利用Room简化数据库操作
+
+6.5 共享数据
+
+6.5.1 通过ContentProvider封装数据
+
+6.5.2 通过ContentResolver访问数据
+
+6.5.3 通过ContentResolver读写数据
+
+6.5.4 通过ContentObserver监听短信
+
+6.6 实战项目：购物车
 
 
 
 ## 第七章 高级控件
 
-### 7.1
+### 7.1 下拉框
 
 #### 7.1.1 下拉框控件 Spinner
 
@@ -910,11 +1015,17 @@ Button btn_sure = findViewById(R.id.sureButton);
 	android:entries="@array/ctype"/>
 ```
 
- 
+#### 7.1.2 数组适配器 ArrayAdapter
+
+
+
+#### 7.1.3 简单适配器 SimpleAdapter
+
+
 
 ### 7.2 列表类视图
 
-#### 7.2.1
+#### 7.2.1 基本适配器 BaseAdapter
 
 
 
@@ -938,7 +1049,83 @@ Button btn_sure = findViewById(R.id.sureButton);
 
 
 
+#### 7.2.3 网格视图 GridView
+
+
+
+### 7.3 翻页类视图
+
+#### 7.3.1 翻页视图 ViewPager
+
+
+
+#### 7.3.2 翻页标签栏 PagerTabStrip
+
+
+
+#### 7.3.3 简单的启动引导页
+
+
+
+### 7.4 碎片 Fragment
+
+#### 7.4.1 碎片的静态注册
+
+
+
+#### 7.4.2  碎片的动态注册
+
+
+
+#### 7.4.3  改进的启动引导页
+
+
+
 ## 第八章 自定义控件
+
+### 8.1 视图的构建过程
+
+#### 8.1.1 视图的构造方法
+
+
+
+#### 8.1.2 视图的测量方法
+
+
+
+#### 8.1.3 视图的绘制方法
+
+
+
+### 8.2 改造已有控件
+
+#### 8.2.1 自定义月份选择器
+
+#### 8.2.2 给翻页标签栏添加新属性
+
+#### 8.2.3 不滚动的列表视图
+
+### 8.3 推送消息通知
+
+#### 8.3.1 通知推送Notification
+
+#### 8.3.2 通知渠道NotificationChannel
+
+#### 8.3.3 推送服务到前台
+
+#### 8.3.4 仿微信的悬浮通知
+
+### 8.4 通过持续绘制实现简单动画
+
+#### 8.4.1 Handler的延迟机制
+
+#### 8.4.2 重新绘制视图界面
+
+#### 8.4.3 自定义饼图动画
+
+
+
+
 
 
 
@@ -997,14 +1184,12 @@ RecyclerView如何进行创建：
 
 
 
-#### RelativeLayout 与 LinearLayout
+RelativeLayout 与 LinearLayout
 
 - 在LinearLayout中，只能做到一个个按顺序排列；
 - 在RelativeLayout中，可以按照自己设置的align或者padding进行随意的排版。
 
-
-
-#### ItemDecoration
+ItemDecoration
 
 使用 **ItemDecoration** 可以实现对recyclerView中的元素进行padding设置
 
@@ -1032,7 +1217,7 @@ outRect.down = divider;
 
 
 
-# 在Adapter里获取屏幕的宽度 & 单一item的宽度
+在Adapter里获取屏幕的宽度 & 单一item的宽度
 
 ```JAVA
 WindowManager wm = (WindowManager) parent.getContext().getSystemService(Context.WINDOW_SERVICE);
@@ -1041,15 +1226,39 @@ int width = display.getWidth();              // 获取 整个屏幕的宽度
 int vWidth = view.getLayoutParams().width; 
 ```
 
+#### 9.3.2 布局管理器 LayoutManager
 
+#### 9.3.3 动态更新循环视图
 
 ### 9.4 升级版翻页
+
+#### 9.4.1 下拉刷新布局 SwipeRefreshLayout
+
+#### 9.4.2 第二代翻页视图 ViewPager2
+
+#### 9.4.3 给ViewPager2集成标签布局
 
 
 
 ## 第十章 打造安装包
 
+### 10.1 应用打包
 
+#### 10.1.1 导出APK安装包
+
+#### 10.1.2 制作App图标
+
+#### 10.1.3 给APK瘦身
+
+### 10.2 规范处理
+
+#### 10.2.1 版本设置
+
+#### 10.2.2 发布模式
+
+#### 10.2.3 多渠道打包
+
+### 10.3 安全加固
 
 # Context
 
