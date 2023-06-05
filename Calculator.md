@@ -1,3 +1,75 @@
+# 23.5.16 学习总结
+
+做出来的东西：
+
+- 计算器的xml界面
+
+- 点击事件，因为页面一共20个button，每一个弄一个onClick事件有点儿不太现实
+
+  - 对每一个button都使用了
+
+    ```xml
+    findViewById("btn_id").setOnClickListener(this)
+    ```
+
+- 点击事件，点击数字显示数字；点击其他符号，没有反应
+
+
+
+遇到的问题：
+
+![截屏2023-05-16 13.29.04](/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-05-16 13.29.04.png)
+
+
+
+- xml界面，因为全是<button/>，每一个button代码有很多相似的，想弄成像css文件那种，统一管理button。
+
+  - 解决了，values文件夹新建style.xml
+
+    ```xml
+    <style name="calculatorButton">
+    	<item name="android:layout_width">0dp</item>
+      <item name="android:layout_height">0dp</item>
+      <item name="android:layout_columnWeight">1</item>
+      <item name="android:layout_rowWeight">1</item>
+      <item name="android:textSize">28sp</item>
+    </style>
+    ```
+
+    
+
+- 太丑，想做圆形按钮，可以让 **android:layout_height 和 android:layout_width**的值相等。可是界面用了 layout_weight 平分，在想如何能获取到平分后的宽度，然后赋值 给layout_height。
+
+  - 解决了，在java文件里设置
+
+    ```xml
+    //获取GridLayout
+    GridLayout gridLayout = findViewById(R.id.gridLayout);
+    Integer columnCount = gridLayout.getColumnCount();
+    
+    WindowManager wm = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
+    int width = (wm.getDefaultDisplay().getWidth())/columnCount;
+    ```
+
+  - 圆形，在drawable里面新建xml文件，设置solid值，背景颜色，radius值，圆弧度。
+
+    
+
+- 上午主要写了xml，和一些简单的逻辑。目前在想主要的计算逻辑，想法是：
+
+  - 因为 乘除 有优先权， A + B × C
+  - 想创建三个数字类型 值，num1 num2 num3
+  - 两个string类型 运算符，operator1 operator2
+  - 攒够3个才计算一次，把值赋给num1
+
+
+
+- 命名问题，
+  - 上午在命名按钮的时候，用的：oneButton, addButton, equalButton, 感觉不太行
+  - 下午改成了btn_one, btn_add, btn_equal
+
+
+
 # 23.5.16 计算器逻辑
 
 创建 LinkedList<Integer> numberList 填充每一个输入的数字
