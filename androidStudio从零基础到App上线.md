@@ -837,6 +837,34 @@ switch是开关按钮，新添加的xml属性包含了：
 - track     设置开关轨道的背景
 - thumb  设置开关标识的图标
 
+```xml
+<LinearLayout
+	android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal">
+
+  <TextView
+		android:layout_width="0dp"
+		android:layout_weight="1"
+		android:layout_height="wrap_content"
+		android:padding="5dp"
+		android:layout_gravity="start"
+		android:text="Switch开关"/>
+
+	<Switch
+		android:id="@+id/sw_status"
+		android:layout_width="80dp"
+		android:layout_height="30dp"
+		android:padding="5dp"
+		android:layout_gravity="end"/>
+
+</LinearLayout>
+```
+
+
+
+
+
 
 
 #### 5.2.3 单选按钮 RadioButton
