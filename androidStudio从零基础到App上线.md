@@ -861,9 +861,32 @@ switch是开关按钮，新添加的xml属性包含了：
 </LinearLayout>
 ```
 
+java文件中：
 
+```java
+private TextView tv_result;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_switch);
 
+        Switch sw_status = findViewById(R.id.sw_status);
+        tv_result = findViewById(R.id.tv_result);
+
+        sw_status.setOnCheckedChangeListener(this);
+
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked){
+            tv_result.setText("switch is on checked for now");
+        } else {
+            tv_result.setText("switch has been closed");
+        }
+    }
+```
 
 
 
@@ -932,17 +955,58 @@ Button btn_sure = findViewById(R.id.sureButton);
 #### 5.3.1 编辑框EditText
 
 ```xml
-<EditView
-	//属性列表/>
+<EditText
+            android:id="@+id/et_phone"
+            android:layout_width="0dp"
+            android:layout_weight="12"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:maxLength="11"
+            android:hint="请输入11位手机号码"/>
 ```
 
 
 
 #### 5.3.2 焦点变更监听器
 
+```java
+private EditText et_phone;
+    private EditText et_password;
+    private TextView tv_phoneConfirm;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_focus);
+
+        et_phone = findViewById(R.id.et_phone);
+        et_password = findViewById(R.id.et_password);
+        tv_phoneConfirm = findViewById(R.id.tv_phoneConfirm);
+
+        et_password.setOnFocusChangeListener(this);
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus){
+            String inputPhone = et_phone.getText().toString();
+            if (inputPhone.length() == 11){
+                tv_phoneConfirm.setText("✅");
+            } else {
+                AlertDialog.Builder builder = new 	     
+                             AlertDialog.Builder(EditFocusActivity.this);
+                builder.setMessage("输入手机号小于11位，请重新输入");
+                builder.show();
+            }
+        }
+    }
+```
+
 
 
 #### 5.3.3 文本变化监听器
+
+
 
 
 
