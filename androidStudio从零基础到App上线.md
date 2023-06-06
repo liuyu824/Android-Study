@@ -138,7 +138,16 @@ public static int dip2px(Context context, float dpValue){
 
 #### 3.2.3 设置视图的对齐方式
 
+设置视图的对齐方式有2种途径：
 
+- 采用了layout_gravity属性，它指定了当前视图相对于上级视图的对齐方式。
+- 采用了gravity属性，它制定了下级视图相对于当前视图的对齐方式。
+
+layout_gravity与gravity的取值包括：left、top、right、bottom，还可以用竖线连接各取值，
+
+例如 “left｜top” 表示即靠左又靠上，也就是朝左上角对齐。
+
+![layout_gravity](/Users/liuyu/Desktop/Android-Study/screenshots/layout_gravity.png)
 
 
 
@@ -1014,6 +1023,12 @@ private EditText et_phone;
 
 #### 5.4.1 提醒对话框 AlertDialog
 
+```java
+AlertDialog.Builder builder = new AlertDialog.Builder(EditFocusActivity.this);
+builder.setMessage("输入手机号小于11位，请重新输入");
+builder.show();
+```
+
 
 
 #### 5.4.2 日期对话框 DatePickerDialog
@@ -1023,6 +1038,14 @@ private EditText et_phone;
 
 
 #### 5.4.3 时间对话框 TimePickerDialog
+
+
+
+#### 5.4.4 Toast
+
+```java
+Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show();
+```
 
 
 
