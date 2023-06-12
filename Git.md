@@ -33,7 +33,7 @@
 
 记录文件每次的更新，可以对每个版本做一个快照，或是记录补丁文件，适合个人用。
 
-![本地版本控制](/Users/liuyu/Desktop/Android开发/本地版本控制.png)
+![本地版本控制](/Users/liuyu/Desktop/Android-Study/screenshots/本地版本控制.png)
 
 ### 2. 集中版本控制 代表SVN
 
@@ -41,7 +41,7 @@
 
 所有的版本数据都存在服务器上，用户的本地只有自己以前所同步的版本，如果不联网的话，用户就看不到历史版本，也无法切换版本验证问题，或在不同分支工作。而且，所有数据都保存在单一的服务器上，有很大风险这个服务器会损坏，这样就会丢失所有的数据，当然可以定期备份。
 
-![集中版本控制](/Users/liuyu/Desktop/Android开发/集中版本控制.png)
+![集中版本控制](/Users/liuyu/Desktop/Android-Study/screenshots/集中版本控制.png)
 
 ### 3. 分布式版本控制
 
@@ -51,7 +51,7 @@
 
 不会因为服务器损坏或者网络问题，造成不能工作的情况。
 
-![分布式版本控制](/Users/liuyu/Desktop/Android开发/分布式版本控制.png)
+![分布式版本控制](/Users/liuyu/Desktop/Android-Study/screenshots/分布式版本控制.png)
 
 
 
@@ -129,7 +129,7 @@ Git本地有三个工作区域：工作目录（Working Directory）、暂存区
 
 日常使用只要记住下图6个命令：
 
-![git常用命令](/Users/liuyu/Desktop/Android开发/git常用命令.png)
+![git常用命令](/Users/liuyu/Desktop/Android-Study/screenshots/git常用命令.png)
 
 
 
@@ -178,7 +178,7 @@ $ git init
 $ git status
 ```
 
-<img src="/Users/liuyu/Desktop/Android开发/git init & status.png" alt="git init & status" style="zoom: 50%;" align="left"/>
+<img src="/Users/liuyu/Desktop/Android-Study/screenshots/git init & status.png" alt="git init & status" style="zoom: 50%;" align="left"/>
 
 ```bash
 # 添加所有文件到暂存区
@@ -191,13 +191,13 @@ $ git commit -m
 
 使用<mark>git add .</mark>之后暂存区内，有文件了。
 
-<img src="/Users/liuyu/Desktop/Android开发/git add. $ status.png" alt="git add. $ status" style="zoom: 50%;" align="left"/>
+<img src="/Users/liuyu/Desktop/Android-Study/screenshots/git add. $ status.png" alt="git add. $ status" style="zoom: 50%;" align="left"/>
 
 ## 忽略文件
 
 在现在的idea或android studio中使用git命令时，会自动生成一个[.gitignore]文件，可以在文件中配置哪些文件不参与到git的版本控制中。
 
-![忽略文件规则](/Users/liuyu/Desktop/Android开发/忽略文件规则.png)
+![忽略文件规则](/Users/liuyu/Desktop/Android-Study/screenshots/忽略文件规则.png)
 
 
 
@@ -217,7 +217,7 @@ git commit -m
 git push origin master
  ```
 
-<img src="/Users/liuyu/Desktop/Android开发/git操作流程.png" align="left"></img>
+<img src="/Users/liuyu/Desktop/Android-Study/screenshots/git操作流程.png" align="left"></img>
 
 
 
@@ -229,3 +229,48 @@ git push origin master
 
 ## 说明：Git分支
 
+git分支中常用指令：
+
+```bash
+# 列出所有本地分支
+git branch
+
+# 列出所有远程分支
+git branch -r
+
+# 新建一个分支，但依然停留在当前分支
+git branch [branch-name]
+
+# 新建一个分支，并切换到该分支
+git checkout -b [branch]
+
+# 合并指定分支到当前分支
+$ git merge [branch]
+
+# 删除分支
+$ git bran ch -d [branch-name]
+
+# 删除远程分支
+$ git push origin --delete [branch-name]
+$ git branch -dr [remote/branch]
+```
+
+多个分支如果并行执行，就会导致我们代码不冲突，也就是存在多个版本！
+
+web-api        -A
+
+web-admin  -B  B会调用A
+
+web-app       -C  C会调用B 间接调用A
+
+如果冲突了就需要协商
+
+如果同一个文件在合并分支时都被修改了则会引起冲突：解决的办法是我们可以修改冲突文件后重新提交！选择要保留别人的代码还是自己的代码。
+
+master主分支应该非常稳定，用来发布新版本，一般情况下不允许在上面工作，工作一般情况下在新建的dev分支上工作，工作完后，比如要发布，或者说dev分支代码稳定后可以合并到主分支master上来。
+
+![git_merge](/Users/liuyu/Desktop/Android-Study/screenshots/git_merge.png)
+
+
+
+for now this is test branch
