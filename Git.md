@@ -244,6 +244,9 @@ git branch [branch-name]
 # 新建一个分支，并切换到该分支
 git checkout -b [branch]
 
+# 切换已存在分支
+git checkout [branch]
+
 # 合并指定分支到当前分支
 $ git merge [branch]
 
