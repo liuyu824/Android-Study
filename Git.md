@@ -251,7 +251,7 @@ git checkout [branch]
 $ git merge [branch]
 
 # 删除分支
-$ git bran ch -d [branch-name]
+$ git branch -d [branch-name]
 
 # 删除远程分支
 $ git push origin --delete [branch-name]
