@@ -274,6 +274,3 @@ master主分支应该非常稳定，用来发布新版本，一般情况下不�
 
 ![git_merge](/Users/liuyu/Desktop/Android-Study/screenshots/git_merge.png)
 
-
-
-for now this is test branch

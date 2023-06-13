@@ -804,9 +804,53 @@ Android把所有能显示的图形都抽象为Drawable类（可绘制的）。
 
 #### 5.1.2 形状图形
 
+在drawable目录下，新建drawable_source_xml文件。
+
+shape默认矩形，需要在shape处添加android:shape约束
+
+```xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <!--  指定了内部形状的填充颜色  -->
+    <solid android:color="@color/black"/>
+
+    <!--  形状轮廓的粗细与颜色  -->
+    <stroke android:width="20dp"
+        android:color="@color/white" />
+</shape>
+```
+
+在java文件中，创建约束方法：
+
+```java
+btn_test = findViewById(R.id.btn_test);
+btn_test.setBackgroundResource(R.drawable.shape_oval);
+```
+
+![截屏2023-06-13 09.45.24](/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-13 09.45.24.png)
+
+
+
 #### 5.1.3 九宫格图片
 
+
+
 #### 5.1.4 状态列表图形
+
+- Button按钮的背景在正常情况下是凸起的，在按下时是凹陷的，从按下到弹起的过程，用户便能知道点击了这个按钮。
+
+具体实现：
+
+在drawable里设置两个状态，按钮按下 & 按钮松开
+
+```xml
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true" android:drawable="@drawable/ic_launcher_foreground"/>
+    <item android:state_pressed="false" android:drawable="@drawable/ic_launcher_background"/>
+</selector>
+```
+
+在UI_xml代码中，还是给btn设置background属性 ->指向刚创建的xml文件
 
 
 
@@ -1051,53 +1095,135 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 ## 第六章 数据存储
 
-6.1 键值对
+### 6.1 键值对
 
-6.1.1 共享参数的用法
+#### 6.1.1 SharedPreferences 共享参数的用法
 
-6.1.2 实现记住密码功能
+- sharedPreferences是android的一个轻量级存储工具，采用的存储结构是Key-Value的键值对儿方式
+- 共享参数的存储介质是符合xml规范的配置文件。
 
-6.1.3 更安全的数据仓库
 
-6.2 数据库
 
-6.2.1 SQL语句的基本语法
+共享参数主要适用于如下场合：
 
-6.2.2 数据库管理器 SQLiteDatabase
+- 简单孤立数据；
+- 文本形式数据；
+- 持久化存储数据。
 
-6.2.3 数据库帮助器 SQliteOpenHelper
+实际开发中，共享参数经常存储数据：App个性化配置信息，用户使用App的行为信息，临时需要保存的片段信息。
 
-6.2.4 优化记住密码功能
+```java
+// 实现将数值以【键值对】的形式保存进sharedPreference
+// 为了写shared preferences文件
+// 需要通过执行edit()创建一个 SharedPreferences.Editor
+SharedPreferences.Editor editor = preferences.edit();
 
-6.3 存储卡
+// 通过类似 putInt()和 putString() 等方法传递keys和values
+editor.putString("name",name);
+editor.putString("age",age);
+editor.putString("height",height);
+editor.putString("weight",weight);
 
-6.3.1 私有存储空间与公共存储空间
+// 通过commit()提交，才能将数值保存进 sharedPreference
+editor.commit();
+```
 
-6.3.2 在存储卡上读写文件
+双击shift-> Device File Explorer, 在data/data中对应应用文件夹中找config.xml文件
 
-6.3.3 运行时动态申请权限
 
-6.4 应用组件 Application
 
-6.4.1 Application的生命周期
+实现使用reload()方法，获取存储在preference中的数据。
 
-6.4.2 利用Application操作全局变量
+```java
+private void reload() {
+  
+  // 通过存储的键值对【名称】，获取到对应的值
+  String pNumber = preferences.getString("pNumber",null);
+  if (pNumber != null){
+    et_pNumber.setText(pNumber);
+  }
+  
+  // 通过存储的键值对【名称】，获取到对应的值
+  String password = preferences.getString("password",null);
+  if (password != null){
+    et_passOrSMS.setText(password);
+  }
+}
+```
 
-6.4.3 避免方法数过多的问题
 
-6.4.4 利用Room简化数据库操作
 
-6.5 共享数据
+#### 6.1.2 实现记住密码功能
 
-6.5.1 通过ContentProvider封装数据
+```java
+@Override
+public void onClick(View v) {
+  // 查看保存密码【checkBox】有没有勾选
+  if (cb_rememberPass.isChecked()){
+    Log.d("cb_rememberPass", "isChecked");
 
-6.5.2 通过ContentResolver访问数据
+    // 获取用户输入的手机号码与密码
+    String pNumber = et_pNumber.getText().toString();
+    String password = et_passOrSMS.getText().toString();
 
-6.5.3 通过ContentResolver读写数据
+    // 创建editor对象
+    SharedPreferences.Editor editor = preferences.edit();
+    
+    // 将手机号码与登陆密码存储进editor中
+    editor.putString("pNumber",pNumber);
+    editor.putString("password",password);
+    
+    // 提交
+    editor.commit();
+  }
+}
+```
 
-6.5.4 通过ContentObserver监听短信
 
-6.6 实战项目：购物车
+
+### 6.2 数据库
+
+#### 6.2.1 SQL语句的基本语法
+
+SQLite是一种小巧的嵌入性数据库，使用方便，开发简单。
+
+
+
+#### 6.2.2 数据库管理器 SQLiteDatabase
+
+#### 6.2.3 数据库帮助器 SQliteOpenHelper
+
+#### 6.2.4 优化记住密码功能
+
+### 6.3 存储卡
+
+#### 6.3.1 私有存储空间与公共存储空间
+
+#### 6.3.2 在存储卡上读写文件
+
+#### 6.3.3 运行时动态申请权限
+
+### 6.4 应用组件 Application
+
+#### 6.4.1 Application的生命周期
+
+#### 6.4.2 利用Application操作全局变量
+
+#### 6.4.3 避免方法数过多的问题
+
+#### 6.4.4 利用Room简化数据库操作
+
+### 6.5 共享数据
+
+#### 6.5.1 通过ContentProvider封装数据
+
+#### 6.5.2 通过ContentResolver访问数据
+
+#### 6.5.3 通过ContentResolver读写数据
+
+#### 6.5.4 通过ContentObserver监听短信
+
+### 6.6 实战项目：购物车
 
 
 
