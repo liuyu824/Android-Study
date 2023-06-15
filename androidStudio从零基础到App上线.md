@@ -776,7 +776,7 @@ tv_metaData.setText(value);
 
 
 
-### 4.4 使用 Fragment
+### 4.4  Fragment
 
 **fragment** 与 **activity** 非常相似，
 
@@ -1043,6 +1043,35 @@ private EditText et_phone;
 
 
 #### 5.3.3 文本变化监听器
+
+- 调用编辑框对象的addTextChangedListener方法注册
+- 文本监听器接口名称为 TextWatcher，该接口提供了3个监控方法：
+  - 文本改变前触发：beforeTextChanged
+  - 文本改变过程中触发：onTextChanged
+  - 文本改变后触发：afterTextChanged
+
+```java
+et_tvChange = findViewById(R.id.et_tvChange);
+et_tvChange.addTextChangedListener(new TextWatcher() {
+  @Override
+  public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+  @Override
+  public void onTextChanged(CharSequence s, int start, int before, int count) {}
+  
+  @Override
+  public void afterTextChanged(Editable s) {
+    if (s.length()==10){
+      // 判断能否成功获取到文本框的变化
+      Log.d("EditTextView", String.valueOf(s));
+      
+      // 关闭软键盘
+      InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+      imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
+  }
+});
+```
 
 
 
