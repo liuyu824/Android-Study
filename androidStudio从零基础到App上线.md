@@ -743,7 +743,36 @@ tv_metaData.setText(value);
 
 #### 4.3.3  给应用页面注册快捷方式
 
+在AndroidManifest.xml文件中，主Activity中添加meta-data：
 
+```xml
+// 指向下方新建的shortcut.xml文件
+<meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+```
+
+在res文件夹下新建xml文件夹，再新建shortcuts.xml文件
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut android:shortcutId="first"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/short_shortcut"
+        android:shortcutLongLabel="@string/long_shortcut">
+      // 创建intent，点击快捷方式后要跳转到哪个页面
+      <intent
+         android:action="android.intent.action.VIEW"
+         android:targetPackage="com.example.chapter04"
+         android:targetClass="com.example.chapter04.ActStartActivity"/>
+     
+      <categories android:name="android.shortcut.conversation"/>  
+    </shortcut>
+</shortcuts>
+```
+
+- 选择跳转的页面后，需要在AndroidManifest.xml文件中，
+- 把android:exported选项设置为true
 
 
 
@@ -1087,15 +1116,25 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 6.4.4 利用Room简化数据库操作
 
-6.5 共享数据
+### 6.5 共享数据
 
-6.5.1 通过ContentProvider封装数据
+#### 6.5.1 通过ContentProvider封装数据
 
-6.5.2 通过ContentResolver访问数据
+- ContentProvider为App存取内部数据提供统一的外部接口，让不同应用之间得以共享数据
 
-6.5.3 通过ContentResolver读写数据
+<img src="/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-13 14.58.31.png" alt="截屏2023-06-13 14.58.31" style="zoom:50%;" align="left"/>
 
-6.5.4 通过ContentObserver监听短信
+例如app读取通讯录的信息
+
+- Client App将用户的输入内容，通过ContentProvider <a style="color:red;font-weight:bold">跨进程通信</a>传递给 Server App。
+
+
+
+#### 6.5.2 通过ContentResolver访问数据
+
+#### 6.5.3 通过ContentResolver读写数据
+
+#### 6.5.4 通过ContentObserver监听短信
 
 6.6 实战项目：购物车
 
