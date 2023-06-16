@@ -317,11 +317,9 @@ LinearLayout可以层层嵌套，每一层再对vertical/horizontal单独定义
 
 #### 3.3.5 TableLayout 表格布局
 
-与GridLayout相似
+与GridLayout相似, 可以实现单行比例，使用GridLayout时无法实现。
 
-可以实现单行比例，使用GridLayout时无法实现。
-
-![tableLayout](/Users/liuyu/Desktop/Android-Study/Screenshots/tableLayout.png)
+<img src="/Users/liuyu/Desktop/Android-Study/Screenshots/tableLayout.png" alt="tableLayout" align="left"/>
 
 
 
@@ -799,17 +797,136 @@ public class NewsFragment extends Fragment{
 }
 ```
 
+##### Fragment产生
 
-
-#### 4.4.2 在 Activity 中添加 Fragment
-
-##### 4.4.2.1 直接在布局文件中添加 **Fragment**
-
+![截屏2023-06-15 15.14.44](/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-15 15.14.44.png)
 
 
 
+#### 4.4.2 什么是Fragment
 
-##### 4.4.2.2 当 **Activity** 运行时添加 **Fragment**
+- 具备生命周期，so可在Acitivity中使用多个Fragment
+
+- 必须委托在Acitivity中才能运行
+  - 当一个Activity暂停时，其中所有的Fragment都会暂停。
+  - Activity运行时，Fragment可独立当作子Activity使用。
+
+
+
+#### 4.4.3 静态添加 Fragment
+
+在fragment中创建element，在主页面中：
+
+```xml
+<androidx.fragment.app.FragmentContainerView
+  android:id="@+id/frg_first"                                            			   android:name="com.example.fragment.BlankFragment1"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"/>
+```
+
+- 必须要为fragment创建id
+- android:name对应创建的fragment的xml文件
+
+
+
+#### 4.4.4 Activity添加两个fragment
+
+见代码
+
+
+
+#### 4.4.5 Fragment动态添加与管理
+
+- 绑定按钮点击事件
+
+```java
+btn_frgReplace.setOnClickListener(this);
+```
+
+- 按钮点击事件代码，调用新方法
+
+```java
+replaceFragment(new BlankFragment1());
+```
+
+- 设置replaceFragment方法
+
+```java
+private void replaceFragment(Fragment fragment) {
+  // Fragment 管理类
+  FragmentManager fragmentManager = getSupportFragmentManager();
+
+  // FragmentTransaction 事务管理类
+  // fragment 替换动作由 transaction 来完成
+  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+  fragmentTransaction.replace(R.id.frameLayout,fragment);
+
+  // 提交replace事件
+  fragmentTransaction.commit();
+}
+```
+
+- 配置fragment管理栈
+
+```java
+// 实现点击返回回到上一个fragment，非桌面
+// fragment 添加到管理栈
+fragmentTransaction.addToBackStack(null);
+```
+
+
+
+#### 4.4.6.1 Activity发送信息给Fragment
+
+两个独立的类相互之间进行通信
+
+原生方案：Bundle
+
+bundle无法存放一个JavaBean，可以使用parceLable实现（安卓序列化）。
+
+- 代码实现
+
+```java
+// new 一个Bundle进行通信
+Bundle bundle = new Bundle();
+bundle.putString("msg","msg");
+
+// 实例化，来传递bundle
+BlankFragment1 blankFragment1 = new BlankFragment1();
+blankFragment1.setArguments(bundle);
+```
+
+#### 4.4.6.2 Fragment动态添加和管理总结
+
+步骤：
+
+1. 创建一个待处理的fragment
+2. 获取FragmentManagement，一般都是通过getSupportFragmentManager()
+3. 开启一个事务transaction，一般调用fragmentManager的beginTransaction()
+4. 使用transaction进行fragment的替换
+5. 提交事务
+
+
+
+#### 4.4.7 Fragment与Activity通信的接口方案
+
+Java语言中类与类自己通信常用方案：接口
+
+
+
+#### 4.4.8 Fragment生命周期
+
+<img src="/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-16 10.18.58.png" alt="截屏2023-06-16 10.18.58" style="zoom:50%;" align="left"/>
+
+
+
+#### 4.4.10 Fragment + ViewPager 实现滑动效果
+
+ViewPager2底层代码使用recyclerView实现，所以默认懒加载
+
+
+
+
 
 
 
@@ -1072,8 +1189,6 @@ et_tvChange.addTextChangedListener(new TextWatcher() {
   }
 });
 ```
-
-
 
 
 
