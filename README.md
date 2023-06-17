@@ -662,11 +662,13 @@ startActivity(intent);
 
 
 
-#### 4.2.2  向下一个Activity发送数据
+#### 4.2.2  普通的活动数据交互
 
 使用Bundle在Activity之间交换数据
 
 （intent使用Bundle对象存放带传递的数据信息）
+
+<a style="font-weight:bold;color:red">调用意图对象的putExtras()方法，取出调用getExtras()方法</a>
 
 ```java
 Bundle bundle = new Bundle();
@@ -683,108 +685,106 @@ Bundle bundle = getIntent().getExtras();
 String A = bundle.getString("name");
 ```
 
+| 数据类型     | 读方法             | 写方法             |
+| :----------- | :----------------- | :----------------- |
+| 整型数       | getInt             | putInt             |
+| 浮点数       | getFloat           | putFloat           |
+| 双精度数     | getDouble          | putDouble          |
+| 布尔值       | getBoolean         | putBoolean         |
+| 字符串       | getString          | putString          |
+| 字符串数组   | getStringArray     | putStringArray     |
+| 字符串列表   | getStringArrayList | putStringArrayList |
+| 可序列化结构 | getSerializable    | putSerializable    |
 
-
-#### 4.2.3  向上一个Activity返回数据
-
-处理下一个页面的应答数据，详细步骤：
-
-- 上一个页面打包好请求数据，调用startActivityForResult方法执行跳转动作
-- 下一个页面接收并解析请求数据，进行相应处理
-- 下一个页面在返回上一个页面时，打包应答数据并调用setResult方法返回数据包裹
-- 上一个页面重写方法onActivityResult，解析获得下一个页面的返回数据。
-
-
-
-### 4.3  为 Activity补充附加信息
-
-#### 4.3.1  利用资源文件配置字符串
-
-```xml
-<String name="string_name">value</String>
-```
-
-在java文件中，通过name获取value的值
+- 如果将bundle传递到下一个页面后还需要返回数据
+  - 调用startActivityForResult()方法
 
 ```java
-String name = getString(R.string.name)
-// 以便直接在java代码中对TextView等元素进行直接赋值
-TextView tv_resource = findViewById(R.id.name_id)
-tv_resource.setText(name);
+@Override
+public void onClick(View v) {
+  // 新建 bundle
+  Bundle bundle = new Bundle();
+  
+  // 设置bundle 携带信息
+  bundle.putString("msg","带着bundle跳转");
+  
+  // 新建意图
+  Intent intent = new Intent(StartActForResultActivity.this,StartActSendResultActivity.class);
+  intent.putExtras(bundle);
+  startActivityForResult(intent,0);
+ }
 ```
 
-
-
-#### 空4.3.2  利用元数据传递配置信息
-
-在使用第三方的SDK时，此种情况比较常见，例如：
-
-- 高德地图：需要在官网下载一个token
-- 微信登录
-
-在整合这些的时候，需要用他们提供好的工具包。
-
-一般android:value的值就是官方提供的token值。
-
-```xml
-<meta-data android:name="weather" android:value="晴天">
-```
-
-在代码中获取元数据
-
-在java代码中，获取元数据信息的步骤分为下列三步：
-
-- 调用getPackageManager方法获得当前应用的包管理器
-- 调用包管理器的getActivityInfo方法获得当前活动的信息对象
-- 活动信息对象的metaData是Bundle包裹类型，调用包裹对象的getString即可获得指定名称的参数值。
+新页面的java文件接收，在finish()跳回之前：
 
 ```java
-TextView tv_metaData = findViewById(R.id.tv_metaData);
-PackageManager pm = getPackageManager();
-ActivityInfo activityInfo = pm.getActivityInfo(getComponentName(),PackageManager.GET_META_DATA);
-Bundle bundle_metaData = activityInfo.metaData;
-String value = bundle_metaData.getString("weather");
-tv_metaData.setText(value);
+// 配置Acitivity的resultCode，携带intent返回
+setResult(Activity.RESULT_OK,intent);
+```
+
+原页面的java文件中，重写onActivityResult方法：
+
+```java
+@Override
+protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+  super.onActivityResult(requestCode, resultCode, intent);
+  if (requestCode == 0 && resultCode == RESULT_OK && intent != null){
+    Bundle backMsg = intent.getExtras();
+    String msg = backMsg.getString("msg");
+
+    tv_desc.setText("bundle返回的值为：");
+    tv_bundleMsg.setText(msg);
+  }
+}
 ```
 
 
 
-#### 空4.3.3  给应用页面注册快捷方式
+#### 4.2.3  改进后的活动数据交互
 
-在AndroidManifest.xml文件中，主Activity中添加meta-data：
+startActivityForResult方法现在已经被标记为废弃了。
 
-```xml
-// 指向下方新建的shortcut.xml文件
-<meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts"/>
+官网建议使用 registerForActivityResult() 方法。
+
+- 先声明一个活动结果启动器对象 ActivityResultLauncher
+
+```java
+private ActivityResultLauncher mLauncher;
 ```
 
-在res文件夹下新建xml文件夹，再新建shortcuts.xml文件
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
-    <shortcut android:shortcutId="first"
-        android:enabled="true"
-        android:icon="@mipmap/ic_launcher"
-        android:shortcutShortLabel="@string/short_shortcut"
-        android:shortcutLongLabel="@string/long_shortcut">
-      // 创建intent，点击快捷方式后要跳转到哪个页面
-      <intent
-         android:action="android.intent.action.VIEW"
-         android:targetPackage="com.example.chapter04"
-         android:targetClass="com.example.chapter04.ActStartActivity"/>
-     
-      <categories android:name="android.shortcut.conversation"/>  
-    </shortcut>
-</shortcuts>
-```
-
-- 选择跳转的页面后，需要在AndroidManifest.xml文件中，
-- 把android:exported选项设置为true
+- 
 
 
 
-#### 空4.4  
+### 4.3 收发应用广播
+
+#### 4.3.1 收发标准广播
+
+
+
+#### 4.3.2 收发有序广播
+
+
+
+#### 4.3.3 收发静态广播
+
+
+
+#### 4.3.4 定时管理器 AlarmManager
+
+
+
+### 4.4 操作后台服务
+
+#### 4.4.1 服务的启动和停止
+
+
+
+#### 4.4.2 服务的绑定与解绑
+
+
+
+#### 4.4.3 活动与服务之间的交互
 
 
 
