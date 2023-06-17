@@ -755,10 +755,21 @@ private ActivityResultLauncher mLauncher;
 - 调用registerForActivityResult方法注册一个善后工作的活动结果启动器
 
 ```java
-mLauncher = registerForActivityResult
+mLauncher = registerForActivityResult(
+  // 第一个参数
+  new ActivityResultContracts.StartActivityForResult(),
+  // 第二个参数填入 onActivityResult 要做的事情
+  result -> {
+    if (result.getResultCode() == RESULT_OK && result.getData() != null){
+      Bundle backMsg = result.getData().getExtras();
+      String backKeyValue = backMsg.getString("msg");
+
+      // 然后就可以根据findViewById的结果
+      // 使用setText等方法进行赋值
+    }
+  }
+);
 ```
-
-
 
 
 
@@ -766,15 +777,9 @@ mLauncher = registerForActivityResult
 
 #### 4.3.1 收发标准广播
 
-
-
 #### 4.3.2 收发有序广播
 
-
-
 #### 4.3.3 收发静态广播
-
-
 
 #### 4.3.4 定时管理器 AlarmManager
 
@@ -783,6 +788,12 @@ mLauncher = registerForActivityResult
 ### 4.4 操作后台服务
 
 #### 4.4.1 服务的启动和停止
+
+Service是android四大组件之一。
+
+
+
+
 
 
 
@@ -1090,41 +1101,43 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 ## 第六章 数据存储
 
-6.1 键值对
+### 6.1 键值对
 
-6.1.1 共享参数的用法
+#### 6.1.1 共享参数的用法
 
-6.1.2 实现记住密码功能
 
-6.1.3 更安全的数据仓库
 
-6.2 数据库
+#### 6.1.2 实现记住密码功能
 
-6.2.1 SQL语句的基本语法
+#### 6.1.3 更安全的数据仓库
 
-6.2.2 数据库管理器 SQLiteDatabase
+### 6.2 数据库
 
-6.2.3 数据库帮助器 SQliteOpenHelper
+#### 6.2.1 SQL语句的基本语法
 
-6.2.4 优化记住密码功能
+#### 6.2.2 数据库管理器 SQLiteDatabase
 
-6.3 存储卡
+#### 6.2.3 数据库帮助器 SQliteOpenHelper
 
-6.3.1 私有存储空间与公共存储空间
+#### 6.2.4 优化记住密码功能
 
-6.3.2 在存储卡上读写文件
+### 6.3 存储卡
 
-6.3.3 运行时动态申请权限
+#### 6.3.1 私有存储空间与公共存储空间
 
-6.4 应用组件 Application
+#### 6.3.2 在存储卡上读写文件
 
-6.4.1 Application的生命周期
+#### 6.3.3 运行时动态申请权限
 
-6.4.2 利用Application操作全局变量
+### 6.4 应用组件 Application
 
-6.4.3 避免方法数过多的问题
+#### 6.4.1 Application的生命周期
 
-6.4.4 利用Room简化数据库操作
+#### 6.4.2 利用Application操作全局变量
+
+#### 6.4.3 避免方法数过多的问题
+
+#### 6.4.4 利用Room简化数据库操作
 
 ### 6.5 共享数据
 
@@ -1236,7 +1249,7 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 
 
-
+项目使用编程语言为Kotlin，目前自己使用Java，进行语言转码，方便后期与同事的代码之间方便互通。
 
 
 
@@ -1252,15 +1265,141 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 ### 7.4 碎片 Fragment
 
+**fragment** 与 **activity** 非常相似，
+
+多个 **fragment** 可以在一个单独的 **activity** 中建立多个UI面板，
+
+也可以在多个 **activity** 中重用 **fragment**。
+
+- 创建 Fragment
+
+必须创建一个 Fragment 的子类
+
+```java
+public class NewsFragment extends Fragment{
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    //从布局文件news.xml加载一个布局文件
+    View v = inflater.inflate(R.layout.news,container, true);
+    return v;
+  }
+}
+```
+
+- Fragment产生
+
+![截屏2023-06-15 15.14.44](/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-15 15.14.44.png)
+
+- 什么是Fragment
+
+具备生命周期，so可在Acitivity中使用多个Fragment
+
+- 必须委托在Acitivity中才能运行
+  - 当一个Activity暂停时，其中所有的Fragment都会暂停。
+  - Activity运行时，Fragment可独立当作子Activity使用。
+
 #### 7.4.1 碎片的静态注册
 
+在fragment中创建element，在主页面中：
 
+```xml
+<androidx.fragment.app.FragmentContainerView
+  android:id="@+id/frg_first"                                            			   android:name="com.example.fragment.BlankFragment1"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"/>
+```
+
+- 必须要为fragment创建id
+- android:name对应创建的fragment的xml文件
 
 #### 7.4.2  碎片的动态注册
+
+- 绑定按钮点击事件
+
+```java
+btn_frgReplace.setOnClickListener(this);
+```
+
+- 按钮点击事件代码，调用新方法
+
+```java
+replaceFragment(new BlankFragment1());
+```
+
+- 设置replaceFragment方法
+
+```java
+private void replaceFragment(Fragment fragment) {
+  // Fragment 管理类
+  FragmentManager fragmentManager = getSupportFragmentManager();
+
+  // FragmentTransaction 事务管理类
+  // fragment 替换动作由 transaction 来完成
+  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+  fragmentTransaction.replace(R.id.frameLayout,fragment);
+
+  // 提交replace事件
+  fragmentTransaction.commit();
+}
+```
+
+- 配置fragment管理栈
+
+```java
+// 实现点击返回回到上一个fragment，非桌面
+// fragment 添加到管理栈
+fragmentTransaction.addToBackStack(null);
+```
 
 
 
 #### 7.4.3  改进的启动引导页
+
+
+
+#### 7.4.4 Fragment动态添加与管理
+
+- Activity发送信息给Fragment
+
+两个独立的类相互之间进行通信
+
+原生方案：Bundle
+
+bundle无法存放一个JavaBean，可以使用parceLable实现（安卓序列化）。
+
+- 代码实现
+
+```java
+// new 一个Bundle进行通信
+Bundle bundle = new Bundle();
+bundle.putString("msg","msg");
+
+// 实例化，来传递bundle
+BlankFragment1 blankFragment1 = new BlankFragment1();
+blankFragment1.setArguments(bundle);
+```
+
+- Fragment动态添加和管理总结
+
+步骤：
+
+1. 创建一个待处理的fragment
+2. 获取FragmentManagement，一般都是通过getSupportFragmentManager()
+3. 开启一个事务transaction，一般调用fragmentManager的beginTransaction()
+4. 使用transaction进行fragment的替换
+5. 提交事务
+
+
+
+#### 7.4.5 Fragment与Activity通信接口
+
+Java语言中类与类自己通信常用方案：接口
+
+
+
+#### 7.4.6 Fragment生命周期
+
+<img src="/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-16 10.18.58.png" alt="截屏2023-06-16 10.18.58" style="zoom:50%;" align="left"/>
 
 
 
@@ -1457,157 +1596,9 @@ int vWidth = view.getLayoutParams().width;
 
 
 
-Fragment
-
-### Fragment
-
-**fragment** 与 **activity** 非常相似，
-
-多个 **fragment** 可以在一个单独的 **activity** 中建立多个UI面板，
-
-也可以在多个 **activity** 中重用 **fragment**。
-
-#### 4.4.1 创建 Fragment
-
-必须创建一个 Fragment 的子类
-
-```java
-public class NewsFragment extends Fragment{
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-    //从布局文件news.xml加载一个布局文件
-    View v = inflater.inflate(R.layout.news,container, true);
-    return v;
-  }
-}
-```
-
-##### Fragment产生
-
-![截屏2023-06-15 15.14.44](/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-15 15.14.44.png)
 
 
 
-#### 4.4.2 什么是Fragment
-
-- 具备生命周期，so可在Acitivity中使用多个Fragment
-
-- 必须委托在Acitivity中才能运行
-  - 当一个Activity暂停时，其中所有的Fragment都会暂停。
-  - Activity运行时，Fragment可独立当作子Activity使用。
-
-
-
-#### 4.4.3 静态添加 Fragment
-
-在fragment中创建element，在主页面中：
-
-```xml
-<androidx.fragment.app.FragmentContainerView
-  android:id="@+id/frg_first"                                            			   android:name="com.example.fragment.BlankFragment1"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"/>
-```
-
-- 必须要为fragment创建id
-- android:name对应创建的fragment的xml文件
-
-
-
-#### 4.4.4 Activity添加两个fragment
-
-见代码
-
-
-
-#### 4.4.5 Fragment动态添加与管理
-
-- 绑定按钮点击事件
-
-```java
-btn_frgReplace.setOnClickListener(this);
-```
-
-- 按钮点击事件代码，调用新方法
-
-```java
-replaceFragment(new BlankFragment1());
-```
-
-- 设置replaceFragment方法
-
-```java
-private void replaceFragment(Fragment fragment) {
-  // Fragment 管理类
-  FragmentManager fragmentManager = getSupportFragmentManager();
-
-  // FragmentTransaction 事务管理类
-  // fragment 替换动作由 transaction 来完成
-  FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-  fragmentTransaction.replace(R.id.frameLayout,fragment);
-
-  // 提交replace事件
-  fragmentTransaction.commit();
-}
-```
-
-- 配置fragment管理栈
-
-```java
-// 实现点击返回回到上一个fragment，非桌面
-// fragment 添加到管理栈
-fragmentTransaction.addToBackStack(null);
-```
-
-
-
-#### 4.4.6.1 Activity发送信息给Fragment
-
-两个独立的类相互之间进行通信
-
-原生方案：Bundle
-
-bundle无法存放一个JavaBean，可以使用parceLable实现（安卓序列化）。
-
-- 代码实现
-
-```java
-// new 一个Bundle进行通信
-Bundle bundle = new Bundle();
-bundle.putString("msg","msg");
-
-// 实例化，来传递bundle
-BlankFragment1 blankFragment1 = new BlankFragment1();
-blankFragment1.setArguments(bundle);
-```
-
-#### 4.4.6.2 Fragment动态添加和管理总结
-
-步骤：
-
-1. 创建一个待处理的fragment
-2. 获取FragmentManagement，一般都是通过getSupportFragmentManager()
-3. 开启一个事务transaction，一般调用fragmentManager的beginTransaction()
-4. 使用transaction进行fragment的替换
-5. 提交事务
-
-
-
-#### 4.4.7 Fragment与Activity通信接口
-
-Java语言中类与类自己通信常用方案：接口
-
-
-
-#### 4.4.8 Fragment生命周期
-
-<img src="/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-16 10.18.58.png" alt="截屏2023-06-16 10.18.58" style="zoom:50%;" align="left"/>
-
-
-
-#### 4.4.10 Fragment + ViewPager 实现滑动效果
-
-ViewPager2底层代码使用recyclerView实现，所以默认懒加载
 
 
 
