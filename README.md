@@ -752,7 +752,13 @@ startActivityForResult方法现在已经被标记为废弃了。
 private ActivityResultLauncher mLauncher;
 ```
 
-- 
+- 调用registerForActivityResult方法注册一个善后工作的活动结果启动器
+
+```java
+mLauncher = registerForActivityResult
+```
+
+
 
 
 
