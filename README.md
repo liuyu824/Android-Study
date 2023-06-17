@@ -551,6 +551,14 @@ finish(); //结束当前的活动页面
 
 
 
+二次理解：
+
+点击按钮后跳转到了新的页面，
+
+在新的页面中，浏览完毕想要返回上一页面，点击按钮后，触发finish();
+
+
+
 #### 4.1.2  Activity的生命周期
 
 ![Android生命周期](/Users/liuyu/Desktop/Android-Study/Screenshots/Android生命周期.png)
