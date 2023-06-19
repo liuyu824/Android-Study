@@ -1194,15 +1194,262 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 #### 7.1.2 数组适配器 ArrayAdapter
 
+- 在root XML文件中添加<Spinner>
+- 新建item.xml文件，只添加TextView
+- 不需要新建一个Adapter
+- 在root Java文件中，新建一个ArrayAdapter，参数包括
+  - this
+  - R.layout.item指向新建只包含TextView的xml布局文件
+  - arrayList，包含了指定数据类型值的List
+
+```java
+public class a2ArrayAdapterActivity extends AppCompatActivity {
+
+    List<GoodsInfo> mGoodList = new ArrayList<>();
+
+    private Spinner spinner;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_a2_array_adapter);
+
+        mGoodList = GoodsInfo.getDefaultList();
+
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("optionA");
+        arrayList.add("optionB");
+        arrayList.add("optionC");
+        arrayList.add("optionD");
+        arrayList.add("optionE");
+        arrayList.add("optionF");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.item,arrayList);
+        spinner = findViewById(R.id.spinner);
+        spinner.setAdapter(adapter);
+    }
+}
+```
+
 
 
 #### 7.1.3 简单适配器 SimpleAdapter
+
+- 在xml布局文件中添加spinner
+
+  - ```xml
+    <Spinner
+      android:id="@+id/spr_withImg"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
+    ```
+
+- 新建xml布局文件，使用LinearLayout内含ImageView以及TextView
+
+  - ```xml
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+    
+        <ImageView
+            android:id="@+id/smp_apt_img"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="180dp"
+            android:src="@drawable/ic_launcher_background"/>
+    
+        <TextView
+            android:id="@+id/smp_apt_tv"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="180dp"
+            android:text="this is TextView space"/>
+    
+    </LinearLayout>
+    ```
+
+- 新建 姓名ArrayList 和 路径ArrayList
+
+  - ```xml
+    for (int i = 0; i < nameList.size(); i++) {
+         HashMap<String,Object> item = new HashMap<>();
+         item.put("icon",iconList.get(i));
+         item.put("name",nameList.get(i));
+         list.add(item);
+    }
+    ```
+
+- 还是不需要新建一个Adapter java class文件，
+
+```java
+SimpleAdapter adapter = new SimpleAdapter(
+  this,
+  list,
+  R.layout.item_with_img,
+  new String[]{"icon","name"},
+  new int[]{R.id.smp_apt_img,R.id.smp_apt_tv}
+);
+
+adapter.setDropDownViewResource(R.layout.item_with_img);
+Spinner spr_withImg = findViewById(R.id.spr_withImg);
+spr_withImg.setPrompt("请选择款式");
+spr_withImg.setAdapter(adapter);
+spr_withImg.setSelection(0);
+```
 
 
 
 ### 7.2 列表类视图
 
 #### 7.2.1 基本适配器 BaseAdapter
+
+- 数组适配器，适合只有文字
+- 简单适配器，适合只有图像和文字
+- 如果存在三个以上的控件，简单适配器会吃力，就需要基本适配器控制
+- 要求在新的Adapter适配器java文件中进行控制。
+
+**默认的spinner布局文件**
+
+```xml
+<Spinner
+   android:id="@+id/spinner"
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"/>
+```
+
+**新建适配器中的布局文件**
+
+```xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".b1BaseAdapterActivity">
+
+    <ImageView
+        android:id="@+id/bAdapter_iv"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="150dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_launcher_background"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_height="150dp">
+
+        <TextView
+            android:id="@+id/bAdapter_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/bAdapter_desc"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+```
+
+**新建适配器java代码**
+
+```java
+public class BaseAdapter extends android.widget.BaseAdapter {
+
+    private Context mContext;
+    private List<GoodsInfo> list_phone;
+
+    public BaseAdapter(Context context, List<GoodsInfo> phoneList) {
+        mContext = context;
+        list_phone = phoneList;
+    }
+
+    @Override
+    public int getCount() {
+        return list_phone.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return list_phone.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+
+        // 转换视图为空
+        if (convertView == null){
+            // 创建一个新的视图拥有者
+            holder = new ViewHolder();
+
+            // 根据布局文件 item_with_img.xml 生成转换视图对象
+            convertView = LayoutInflater.from(mContext).inflate(
+                    R.layout.item_base_adapter,null);
+
+            holder.bAdapter_iv = convertView.findViewById(R.id.bAdapter_iv);
+            holder.bAdapter_name = convertView.findViewById(R.id.bAdapter_name);
+            holder.bAdapter_desc = convertView.findViewById(R.id.bAdapter_desc);
+            convertView.setTag(holder);
+        } else {
+            // 从转换视图中获取之前保存的视图持有者
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        GoodsInfo phone = list_phone.get(position);
+        holder.bAdapter_iv.setImageResource(phone.pic);
+        holder.bAdapter_name.setText(phone.name);
+        holder.bAdapter_desc.setText(phone.desc);
+        holder.bAdapter_iv.requestFocus();
+        return convertView;
+    }
+
+    public class ViewHolder{
+        public ImageView bAdapter_iv;
+        public TextView bAdapter_name;
+        public TextView bAdapter_desc;
+    }
+}
+```
+
+**默认的java代码文件**
+
+```java
+public class b1BaseAdapterActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_b1_base_adapter);
+
+        ArrayList<GoodsInfo> list = GoodsInfo.getDefaultList();
+        BaseAdapter baseAdapter = new BaseAdapter(this,list);
+
+        Spinner spinner = findViewById(R.id.spinner);
+        spinner.setAdapter(baseAdapter);
+    }
+}
+```
+
+
+
+
+
+
 
 
 
@@ -1247,15 +1494,117 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
   - onPageScrolled：页面滑动过程中触发
   - onPageSelected：选中页面时，即滑动结束后触发
 
+XML文件中添加ViewPager，
+
+```xml
+<androidx.viewpager.widget.ViewPager
+   android:id="@+id/vp_content"
+   android:layout_width="match_parent"
+   android:layout_height="370dp"/>
+```
 
 
-项目使用编程语言为Kotlin，目前自己使用Java，进行语言转码，方便后期与同事的代码之间方便互通。
 
+翻页视图包含了多个页面项，要借助翻页适配器展示每一个页面。
 
+实现原理与基本适配器类似，从PagerAdapter派生的翻页适配器，实现方法：
+
+- 构造方法：指定适配器处理数据集合
+- getCount：获取页面项个数
+- isViewFromObject：判断当前视图是否来自指定对象，返回view == object
+- instantiateItem：实例话指定位置的页面，添加到容器
+- destroyItem：从容器销毁指定位置的页面
+- getPageTitle：获取指定页面的标题文本，搭配翻页标签栏才实现该方法
+
+```java
+// 声明一个视图列表
+private final List<ImageView> mViewList = new ArrayList<>();
+
+// 声明一个商品信息列表
+private List<GoodsInfo> mGoodsList;
+
+// 图像翻页适配器的构造方法，传入上下文与商品信息列表
+public ImagePagerAdapter(Context context, List<GoodsInfo> goodsList){
+  mGoodsList = goodsList;
+  
+  // 给每个商品分配一个专用的图像视图
+  for (int i = 0; i < mGoodsList.size(); i++) {
+    // 创建一个图像视图对象
+    ImageView view = new ImageView(context);
+    
+    view.setLayoutParams(
+      new ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT)
+    );
+    view.setImageResource(mGoodsList.get(i).pic);
+    
+    // 把该商品的图像视图添加到视图列表
+    mViewList.add(view);
+  }
+}
+
+// 获取页面项的个数
+@Override
+public int getCount() {
+  return mViewList.size();
+}
+
+// 判断当前视图是否来自指定对象
+@Override
+public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+  return view == object;
+}
+
+@Override
+public Object instantiateItem(@NonNull ViewGroup container, int position) {
+  container.addView(mViewList.get(position));
+  return mViewList.get(position);
+}
+
+@Override
+public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+  container.removeView(mViewList.get(position));
+}
+
+@Override
+public CharSequence getPageTitle(int position) {
+  return super.getPageTitle(position);
+}
+```
 
 
 
 #### 7.3.2 翻页标签栏 PagerTabStrip
+
+Android提供了与ViewPager配套翻页标签栏 PagerTabStrip
+
+类似选项卡效果，文本下横线，点击选项卡可切换对应页面。
+
+```xml
+// 使用方法
+// 在xml页面布局文件 ViewPager节点中添加
+<androidx.viewpager.widget.ViewPager
+   android:id="@+id/vp_content"
+   android:layout_width="match_parent"
+   android:layout_height="370dp">
+
+   <androidx.viewpager.widget.PagerTabStrip
+      android:id="@+id/pts_tab"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"/>
+
+</androidx.viewpager.widget.ViewPager>
+```
+
+翻页适配器中重写getPageTitle方法
+
+```java
+@Override
+public CharSequence getPageTitle(int position) {
+  return mGoodsList.get(position).name;
+}
+```
 
 
 
