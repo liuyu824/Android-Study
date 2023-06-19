@@ -1159,8 +1159,6 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 #### 6.5.4 通过ContentObserver监听短信
 
-6.6 实战项目：购物车
-
 
 
 ## 第七章 高级控件
