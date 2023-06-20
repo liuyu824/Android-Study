@@ -1129,7 +1129,38 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 
 #### 6.4.1 Application的生命周期
 
+Application是Android一大组件，app运行过程中有且只有一个对象贯穿应用的整个生命周期。
+
+AndroidManifest中每一个Activity的上级就是Application节点。
+
+- 每一个Activity都指定了name属性；
+- 尝试给Application节点添加name属性。
+
+```java
+<application  android:name=".MainApplication"
+```
+
+- 报错创建MainApplication.java，要求该类继承Application，重写方法
+  - onCreate：App启动时调用；
+  - onTerminate：App终止时调用；
+  - onConfigurationChanged：配置改变时调用，例如从竖屏变为横屏。
+
+```xml
+## 启动开始调用了 onCreate() 方法
+## 退出 关闭 后台杀死 app 都不会调用 onTerminate() 方法
+```
+
+
+
 #### 6.4.2 利用Application操作全局变量
+
+适合在Application中保存的全局变量主要有以下3类数据：
+
+- 会频繁读取的信息，例如用户名、手机号码等；
+- 不方便由意图传递的数据，例如位图对象、非字符串类型的集合对象等；
+- 容易因频繁分配内存而导致内存泄漏的对象，例如Handler处理器实例等。
+
+写一个继承自Application的新类MainApplication。
 
 #### 6.4.3 避免方法数过多的问题
 
@@ -1146,6 +1177,25 @@ Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show
 例如app读取通讯录的信息
 
 - Client App将用户的输入内容，通过ContentProvider <a style="color:red;font-weight:bold">跨进程通信</a>传递给 Server App。
+
+完整的Content Provider包含了三部分：
+
+- ContentProvider 内容提供器
+- ContentResolver 内容解析器
+- ContentObserver 内容观察器
+
+ContentProvider 给 App 存取内部数据提供了统一的外部接口，让不同的应用之间可以共享数据。
+
+ContentProvider可以操作当前设备其他应用的内部数据，是一种中间层次的数据存储形式。
+
+ContentProvider是服务端存取数据的抽象类，需要在基础上重写方法：
+
+- onCreate：创建数据库并获取数据库连接
+- insert：添加
+- delete：删除
+- update：更新
+- query：查询
+- getType：获取ContentProvider支持的数据类型。
 
 
 
@@ -1924,6 +1974,22 @@ int vWidth = view.getLayoutParams().width;
 #### 10.2.3 多渠道打包
 
 ### 10.3 安全加固
+
+## 第十三章 网络通信
+
+介绍App开发对多线程的进阶用法。
+
+- 利用 Message 配合 Handler 完成主线程与分线程之间的简单通信；
+- 通过 runOnUiThread 方法简化分线程与处理器的通信机制；
+- 如何使用工作管理器替代 IntentService 实现后台管理。
+
+### 13.1 多线程
+
+
+
+
+
+
 
 # Context
 
