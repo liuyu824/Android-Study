@@ -1089,6 +1089,12 @@ builder.show();
 
 #### 5.4.4 Toast
 
+设置屏幕上显示 Toast 消息框，三个参数：
+
+- Context，设置在哪个屏幕上显示；
+- String，设置显示的文字；
+- Toast.LENGTH_SHORT 或 Toast.LENGTH_LONG，设置消息框显示时间长短。
+
 ```java
 Toast.makeText(this,"请输入正确位数手机号码",Toast.LENGTH_SHORT).show();
 ```
@@ -1985,15 +1991,115 @@ int vWidth = view.getLayoutParams().width;
 
 ### 13.1 多线程
 
+#### 13.1.1 分线程通过 Handler 操作界面
+
+子线程进行耗时操作，不能直接操作UI，主线程可以直接操作UI；
+
+- Handler多线程通信，异步通信
+  - Handler机制几个主要角色：
+    - <a style="color:red;font-weight:bold">Handler:</a>
+    - <a style="color:red;font-weight:bold">Message:</a>
+    - Looper
+    - MessageQueue
+  - 主线程
+
+<img src="/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-21 09.37.33.png" style="zoom:67%;"/>
+
+传递消息：
+
+- SendMessage将信息发送到MessageQueue队列里
+- Looper从队列中拿消息
+- 回传给Handler，执行handleMessage()
+
+<img src="/Users/liuyu/Library/Application Support/typora-user-images/截屏2023-06-21 09.53.47.png" style="zoom:67%;" align="left"/>
+
+在MainActivity.java代码中
+
+```java
+// 创建全局变量 Handler
+private Handler handler = new Handler(Looper.myLooper()){
+  @Override
+  public void handleMessage(@NonNull Message msg) {
+    super.handleMessage(msg);
+    
+    // if判断，可能有多个子线程，根据msg.what参数分辨是哪个
+    if (msg.what == 0){
+      String strData = (String) msg.obj;
+      tv_result.setText(strData);
+      Toast.makeText(MainActivity.this, "主线程收到消息了", Toast.LENGTH_LONG).show();
+    }
+  }
+};
+```
+
+在代码中创建 子线程 Thread 以及 Message
+
+```java
+new Thread(new Runnable() {
+  @Override
+  public void run() {
+    String stringFormat = getStringFromNet();
+    
+    Message msg = new Message();
+    // what用来区分是谁发的消息
+    msg.what = 0;
+    // 传递 string 字符串
+    msg.obj = stringFormat;
+    handler.sendMessage(msg);
+  }
+}).start();
+```
+
+
+
+#### 13.1.2 通过runOnUiThread 在子线程里改变ui界面
+
+Android提供的简单交互方式，分线程若想操纵界面控件，调用 <a style="font-weight:bold">runOnUiThread</a>方法。
+
+```java
+private void startThread() {
+  Thread t = new Thread(new Runnable() {
+    @Override
+    public void run() {
+      tv_runOnUiTrdRst.setText(
+        "Try to use new thread to control the UI screen。" +
+        "\n" +
+        "this is a new line");
+    }
+  });
+  t.start();
+}
+```
+
+有趣的地方：
+
+- 在子线程中如果单纯的对 TextView 刷新不会造成崩溃
+- 如果进一步将 TextView 中的文字增加行数，就会造成崩溃
+
+使用<mark> RunOnUiThread() </mark>，可以成功刷新UI界面的TextView文字。
+
+```java
+runOnUiThread(() -> tv_runOnUiTrdRst.setText(
+  "Try to use new thread to control the UI screen。" +
+  "\n" +
+  "this is a new line"));
+```
 
 
 
 
 
 
-# Context
 
-理解Context
+
+
+
+
+
+
+
+
+## Context
 
 - 可以理解为“上下文”：贯穿整个应用；
 - 也可以理解为“运行环境”：它提供了一个应用运行所需要的信息，资源，系统服务等；
