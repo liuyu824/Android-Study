@@ -2,23 +2,15 @@
 
 ### Java
 
-##### equals和==的区别
+#### equals和==的区别
 
 对于==，基本数据类型，比较的是值是否相等，引用数据类型，比较的是对象地址是否相等。对于equal，默认对象地址。String，重写了方法，比较的是值是否相同。
 
 
 
-- 
-
-##### HashMap
 
 
-
-##### 
-
-
-
-##### 如何解决同一个变量同时被多个线程改动的情况
+#### HashMap底层实现原理
 
 
 
@@ -26,7 +18,75 @@
 
 
 
-##### 几种新建线程的方式
+#### 如何解决同一个变量同时被多个线程改动的情况
+
+##### Synchronized关键字最主要有以下3种应用方式，
+
+##### 修饰实例方法
+
+作用于当前实例加锁，进入同步代码前要获得当前实例的锁,
+
+实例对象锁就是用synchronized修饰实例对象中的实例方法，注意是实例方法不包括静态方法，如下,
+
+```java
+public class AccountingSync implements Runnable{
+    //共享资源(临界资源)
+    static int i=0;
+
+    /**
+     * synchronized 修饰实例方法
+     */
+    public synchronized void increase(){
+        i++;
+    }
+    @Override
+    public void run() {
+        for(int j=0;j<1000000;j++){
+            increase();
+        }
+    }
+    public static void main(String[] args) throws InterruptedException {
+        AccountingSync instance=new AccountingSync();
+        Thread t1=new Thread(instance);
+        Thread t2=new Thread(instance);
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println(i);
+    }
+    /**
+     * 输出结果:
+     * 2000000
+     */
+}
+```
+
+
+
+##### 修饰静态方法
+
+作用于当前类对象加锁，进入同步代码前要获得当前类对象的锁
+
+
+
+##### 修饰代码块
+
+指定加锁对象，对给定对象加锁，进入同步代码库前要获得给定对象的锁。
+
+
+
+##### 悲观锁与乐观锁（顾名思义）
+
+###### 悲观锁：
+
+在每次使用变量值时，都默认别的线程已经改变过了。在使用时就对变量进行上锁，别的进程使用时对遭遇阻塞。直到此线程使用完成，释放锁，别的线程再使用。
+
+######  乐观锁
+
+
+
+#### 几种新建线程的方式
 
 1. 继承Thread类，重写run()方法，编写线程执行的代码。创建子类对象，调用start()方法。
 
