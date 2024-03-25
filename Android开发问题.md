@@ -1,6 +1,12 @@
-# **Android开发面试问题**
+# **Android开发问题**
 
 ### Java
+
+#### Java的四大特性
+
+封装、继承、多态、抽象
+
+
 
 #### equals和==的区别
 
@@ -208,8 +214,6 @@
    }
    ```
 
-注解池
-
 
 
 ### Android
@@ -252,17 +256,24 @@
 
 - Service
 
+  - Service用于在后台执行长时间运行的操作，即使用户切换到其他应用或锁屏，这些操作也能继续进行。Service没有用户界面，它可以在后台执行耗时的任务或监听网络变化等。Service有两种状态：started（启动）和bound（绑定）。
 
 
 - Content Provider
-
+  - Content Provider用于在应用程序之间共享数据。它提供了一个统一的接口来访问数据，这些数据可能存储在数据库、文件或其他地方。Content Provider允许不同的应用程序访问和修改共享数据。
 
 
 - Broadcast Receiver
+  - Broadcast Receiver用于接收系统或应用程序发出的广播消息。它可以用来接收通知，如网络变化、电池电量低等。Broadcast Receiver不提供用户界面，但可以启动Activity或Service来响应接收到的广播。
+
 
 #### ContentProvider作为四大组件之一有什么作用？
 
+内容提供程序有助于应用管理其自身和其他应用所存储数据的访问，并提供与其他应用共享数据的方法。
 
+#### Handler机制
+
+描述
 
 #### Bundle的作用是什么？
 
@@ -271,7 +282,16 @@
 
 #### Fragment的生命周期
 
+1. Fragment的生命周期包含11个，其中有6个是和Activity的生命周期是相同的（onCreate()、onStart()、onResume()、onPause()、onStop（）、onDestroy（）），还有5个如下：
+2. onAttach（）：当Fragment和Activity进行关联的时候调用；
 
+2. onCreateView（）：加载Fragment相关的布局视图的时候调用；
+
+3. onActivityCreated（）：对应的Activity已经创建的时候调用；
+
+4. onDestroyView（）：清除Fragment相关的布局视图的时候调用；
+
+5. onDetach（）：当Fragment和Activity解除关联的时候调用；
 
 #### MVC  
 
@@ -287,4 +307,87 @@ Model — View — Presenter
 
 #### MVVM 
 
-Model — View — ViewModel 
+Model — View — ViewModel
+
+
+
+### 代码
+
+#### 字符串拆解并按顺序排序
+
+```java
+import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello world!");
+
+        System.out.println("------------");
+
+        /**
+         * " abc12d3456ef789gh" ->"alb203d405f6g7h89"
+         */
+
+        String originStr = "abc12d3456ef789gh";
+        int orgStrLength = originStr.length();
+        // 新建两个ArrayList，用于存放数字与英语
+        ArrayList<String> engArr = new ArrayList<>();
+        ArrayList<String> numArr = new ArrayList<>();
+
+        for (int i = 0; i < orgStrLength; i++) {
+            if ("123456789".contains(String.valueOf(originStr.charAt(i)))){
+                numArr.add(String.valueOf(originStr.charAt(i)));
+            } else {
+                engArr.add(String.valueOf(originStr.charAt(i)));
+            }
+        }
+
+        int engArrLength = engArr.size();
+        int numArrLength = numArr.size();
+
+        String finalStr = "";
+        for (int i = 0; i < (Math.max(engArrLength, numArrLength)); i++) {
+            if (i < (Math.min(engArrLength, numArrLength))){
+                finalStr += engArr.get(i);
+                finalStr += numArr.get(i);
+            } else {
+                if (engArrLength > numArrLength){
+                    finalStr += engArr.get(i);
+                } else {
+                    finalStr += numArr.get(i);
+                }
+            }
+        }
+        System.out.println(finalStr);
+    }
+}
+```
+
+#### 数组排序
+
+```java
+/**
+* 要求：
+* nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
+* 输出：[1,2,2,3,5,6]
+*/
+
+int[] nums1 = new int[]{1,2,3,0,0,0};
+int[] nums2 = new int[]{2,5,6};
+int[] finalNums = new int[6];
+
+// 获取每个数组的长度
+int nums1Length = nums1.length;
+int nums2Length = nums2.length;
+for (int i = 0; i < nums1Length; i++) {
+  if (nums1[i] != 0){
+    finalNums[i] = nums1[i];
+  }
+}
+for (int i = 3; i < nums2Length+3; i++) {
+  finalNums[i] = nums2[i-3];
+}
+Arrays.sort(finalNums);
+System.out.println(Arrays.toString(finalNums));
+```
+
