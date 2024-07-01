@@ -14,6 +14,20 @@
 
 
 
+#### 进程与线程的区别
+
+
+
+#### 进程内还能再创建进程吗
+
+
+
+#### 单例模式
+
+
+
+#### HTTP请求，get和post的区别
+
 
 
 #### HashMap底层实现原理
@@ -321,6 +335,12 @@
 - Bundle是Android中的一个类，用于<u>存储键值对形式的数据</u>。
 - 常常用于在各个Activity或Fragment中，传递参数。
 
+
+
+### Bundle可以传递一个对象吗
+
+
+
 #### Fragment的生命周期
 
 1. Fragment的生命周期包含11个，其中有6个是和Activity的生命周期是相同的（onCreate()、onStart()、onResume()、onPause()、onStop（）、onDestroy（）），还有5个如下：
@@ -351,6 +371,10 @@ Model — View — Presenter
 #### MVVM 
 
 Model — View — ViewModel
+
+
+
+#### Flutter / React Native 声明式UI
 
 
 
